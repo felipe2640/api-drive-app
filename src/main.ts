@@ -6,18 +6,11 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: [
-      'http://localhost:3001',
-      'http://example.com',
-      'http://www.example.com',
-      'http://app.example.com',
-      'https://example.com',
-      'https://www.example.com',
-      'https://app.example.com',
-    ],
+    origin: [process.env.CORSORIGIN],
     methods: ['GET', 'POST', 'DELETE', 'PATCH', 'PUT'],
     credentials: true,
   });
+
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   const config = new DocumentBuilder()
     .addBearerAuth()
@@ -28,6 +21,6 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  await app.listen(3000);
+  await app.listen(process.env.PORT);
 }
 bootstrap();
